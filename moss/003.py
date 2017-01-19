@@ -1,6 +1,11 @@
 import argparse as ap
 
 def parse_cla():
+  """
+  parses command line for arguments
+
+  :return dict args: all parsed arguments
+  """
   par = ap.ArgumentParser(description="Accepts user input")
 
   par.add_argument("--n",
@@ -13,6 +18,12 @@ def parse_cla():
   return args
 
 def is_prime(n):
+  """
+  checks if a given number is prime or not
+
+  :param int n: number to check for primality
+  :return ble: boolean for if prime or not
+  """
   if n < 2:
     return False
   for i in range(2, int(n//2+1)):
@@ -22,6 +33,12 @@ def is_prime(n):
   return True
 
 def find_lowest_prime_factor(n):
+  """
+  finds lowest prime number that is also a factor of a given number
+
+  :param int n: number to find prime factor
+  :return int: lowest prime factor
+  """
   for i in range(2, int(n//2+1)):
     if n % i == 0 and is_prime(i):
       return i

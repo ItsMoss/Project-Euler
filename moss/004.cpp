@@ -27,7 +27,7 @@ int main(int argc, char ** argv) {
   std::cout << "Finding the largest palindromic product of two 3-digit numbers..." << std::endl;
   int max = 0, ii, jj;
   for (int i = 999; i > 99; i--) {
-    for (int j = 999; j > 99; j--) {
+    for (int j = i; j > 99; j--) {
       if (is_palindromic(i*j) && i*j > max) {
         max = i * j;
 	ii = i;

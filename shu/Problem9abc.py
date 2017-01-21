@@ -11,3 +11,6 @@ for b in range(1, 999):
         if P == 500000:
             abc = a*b*math.pow(b, 2)*math.pow(a, 2)
             print(abc)
+
+#Note: Solved mathematically first and then decided to use program
+#Problem reduced to 500,000 = (1000 - b) * (1000 * a)

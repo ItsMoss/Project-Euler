@@ -12,7 +12,6 @@ while count < 1001:
         for j in range(i - 1, 0, -1):
 
             if j == 1:
-                prime = i
                 count += 1
 
             if i % j == 0:

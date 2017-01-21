@@ -12,7 +12,7 @@ class Bigint {
     void padZerosLeft(std::string & str, size_t length);
     int char2int(char digit);
     void removeExtraZeros(std::string & str1, std::string & str2);
-    bool lessThan(std::string & str) ;
+    bool lessThan(std::string & str);
     void swap(std::string & str1, std::string & str2);
     void carryTheOne(std::string & str, size_t pos);
 

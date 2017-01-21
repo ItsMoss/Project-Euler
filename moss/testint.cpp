@@ -12,7 +12,7 @@ int main(int argc, char ** argv) {
   n1.add(s2);
   std::cout << "Resulting sum = " << n1.get() << std::endl;
   std::cout << "Difference of sum = " << n1.subtract(s2) << std::endl;
-  // std::cout << "Resulting product = " << n1.multiply(s2) << std::endl;
-  // std::cout << "Division of product = " << n1.divide(s2) << std::endl;
+  std::cout << "Resulting product = " << n1.multiply(s2) << std::endl;
+  std::cout << "Division of product = " << n1.divide(s2) << std::endl;
   return EXIT_SUCCESS;
 }

@@ -33,11 +33,6 @@ for i in range(990100, 10000, -1):
     else:
         if A > 0:
             break
-
-                
- 
-                    
-                        
                     
 
         

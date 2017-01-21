@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include "bigint.h"
 
 size_t Bigint::max(std::string str1, std::string str2) const {
@@ -37,7 +38,7 @@ bool Bigint::lessThan(std::string & str) {
   if (number.length() < str.length()) return true;
   for (size_t i = 0; i < number.length(); i++) {
     if (number[i] > str[i]) return false;
-    else if (number[i] < str[i]) return true;
+    if (number[i] < str[i]) return true;
   }
   return false;
 }
@@ -112,27 +113,60 @@ std::string Bigint::subtract(std::string & minus) {
   return number;
 }
 
-/* std::string Bigint::multiply(std::string & times) {
+std::string Bigint::multiply(std::string & times) {
+  removeExtraZeros(number, times);
   // determine whether number or times is larger
+  if (!lessThan(times)) swap(number, times);
   // swap number and times if times is larger
   // create a vector of stringstreams with same length as number
+  std::vector<std::string> products;
   // init remainder to 0
+  int remainder = 0;
   // double for loop where outer is times length, inner is number length
+  for (size_t i = times.length(); i > 0; i--) {
+    std::stringstream strm;
+    std::string zeros = std::string(times.length()-i, '0');
+    strm << zeros;
+    for (size_t j = number.length(); j > 0; j--) {
     // product = number[len-j] * times[len-i] + remainder
+      int product = char2int(number[j-1]) * char2int(times[i-1]) + remainder;
     // remainder = product / 10
+      remainder = product / 10;
     // vector[i] << product % 10
+      strm << product % 10;
+    }
+    strm << remainder;
+    std::string str = strm.str();
+    products.push_back(str);
+  }
   // set number to vector[0]
+  number = products[0];
   // loop through rest of vector and do add(vector[i])
-  // return number;
-} */
+  for (size_t k = 1; k < products.size(); k++) {
+    add(products[k]);
+  }
+  std::reverse(number.begin(), number.end());
+  return number;
+}
 
-/* std::string Bigint::divide(std::string & divisor) {
-  // find reciprocal of divisor to 3  decimal points
-  // multiply both number and divisor by 1000
-  // multiply(divisor)
-  // chop off last 6 digits of number
-  // return number;
-} */
+std::string Bigint::divide(std::string & divisor) {
+  if (lessThan(divisor)) {
+    number = std::string("0");
+    return number;
+  }
+  Bigint multiple = Bigint(divisor);
+  int ans = 0;
+  std::string m = multiple.get();
+  while (!lessThan(m)) {
+    multiple.add(divisor);
+    ans++;
+    m = multiple.get();
+  }
+  std::stringstream strm;
+  strm << ans;
+  number = strm.str();
+  return number;
+}
 
 std::string Bigint::get() const {
   return number;

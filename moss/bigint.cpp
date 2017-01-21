@@ -26,8 +26,10 @@ int Bigint::char2int(char digit) {
 }
 
 void Bigint::removeExtraZeros(std::string & str1, std::string & str2) {
-  while (str1[0] == str2[0] && str1[0] == '0') {
+  while (str1.length() > 1 && str1[0] == '0') {
     str1.erase(str1.begin());
+  }
+  while (str2.length() > 1 && str2[0] == '0') {
     str2.erase(str2.begin());
   }
 }
@@ -55,6 +57,8 @@ void Bigint::carryTheOne(std::string & str, size_t pos) {
   if (str[pos-1] - '0' < 0) str[pos-1] += 10;
 }
 
+Bigint::Bigint() : number(std::string("0")) {}
+
 Bigint::Bigint(std::string n) : number(n) {}
 
 Bigint::Bigint(const Bigint & rhs) {
@@ -67,7 +71,7 @@ Bigint & Bigint::operator=(const Bigint & rhs) {
   return *this;
 }
 
-std::string Bigint::add(std::string & plus) {
+std::string Bigint::add(std::string plus) {
   removeExtraZeros(number, plus);
   size_t len = max(number, plus);
   padZerosLeft(number, len);
@@ -87,7 +91,7 @@ std::string Bigint::add(std::string & plus) {
   return number;
 }
 
-std::string Bigint::subtract(std::string & minus) {
+std::string Bigint::subtract(std::string minus) {
   removeExtraZeros(number, minus);
   size_t len = max(number, minus);
   padZerosLeft(number, len);
@@ -113,17 +117,17 @@ std::string Bigint::subtract(std::string & minus) {
   return number;
 }
 
-std::string Bigint::multiply(std::string & times) {
+std::string Bigint::multiply(std::string times) {
   removeExtraZeros(number, times);
   // determine whether number or times is larger
-  if (!lessThan(times)) swap(number, times);
+  if (lessThan(times)) swap(number, times);
   // swap number and times if times is larger
   // create a vector of stringstreams with same length as number
   std::vector<std::string> products;
-  // init remainder to 0
-  int remainder = 0;
   // double for loop where outer is times length, inner is number length
   for (size_t i = times.length(); i > 0; i--) {
+    // init remainder to 0
+    int remainder = 0;
     std::stringstream strm;
     std::string zeros = std::string(times.length()-i, '0');
     strm << zeros;
@@ -137,6 +141,7 @@ std::string Bigint::multiply(std::string & times) {
     }
     strm << remainder;
     std::string str = strm.str();
+    std::reverse(str.begin(), str.end());
     products.push_back(str);
   }
   // set number to vector[0]
@@ -145,11 +150,10 @@ std::string Bigint::multiply(std::string & times) {
   for (size_t k = 1; k < products.size(); k++) {
     add(products[k]);
   }
-  std::reverse(number.begin(), number.end());
   return number;
 }
 
-std::string Bigint::divide(std::string & divisor) {
+std::string Bigint::divide(std::string divisor) {
   if (lessThan(divisor)) {
     number = std::string("0");
     return number;

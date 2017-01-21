@@ -17,16 +17,17 @@ class Bigint {
     void carryTheOne(std::string & str, size_t pos);
 
   public:
-    Bigint() {}
+    Bigint();
     Bigint(std::string n);
     Bigint(const Bigint & rhs);
     Bigint & operator=(const Bigint & rhs);
     ~Bigint() {}
-    std::string add(std::string & plus);
-    std::string subtract(std::string & minus);
-    std::string multiply(std::string & times);
-    std::string divide(std::string & divisor);
+    std::string add(std::string plus);
+    std::string subtract(std::string minus);
+    std::string multiply(std::string times);
+    std::string divide(std::string divisor);
     std::string get() const;
+   
 };
 
 #endif

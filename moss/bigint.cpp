@@ -35,7 +35,6 @@ void Bigint::removeExtraZeros(std::string & str1, std::string & str2) {
 }
 
 bool Bigint::lessThan(std::string & str) {
-  removeExtraZeros(number, str);
   if (number.length() > str.length()) return false;
   if (number.length() < str.length()) return true;
   for (size_t i = 0; i < number.length(); i++) {
@@ -105,7 +104,7 @@ std::string Bigint::subtract(std::string minus) {
   for (size_t i = len; i > 0; i--) {
     int diff = char2int(number[i-1]) - char2int(minus[i-1]);
     if (diff < 0) {
-      diff *= -1;
+      diff += 10;
       carryTheOne(number, i-1);
     }
     sstrm << diff;
@@ -169,6 +168,19 @@ std::string Bigint::divide(std::string divisor) {
   std::stringstream strm;
   strm << ans;
   number = strm.str();
+  return number;
+}
+
+std::string Bigint::pow(int exp) {
+  std::string n = number;
+  if (exp > 0) {
+    for (int i = 1; i < exp; i++) multiply(n);
+  }
+  else if (exp == 0) number = std::string("1");
+  else {
+    number = std::string("0");
+  }
+
   return number;
 }
 

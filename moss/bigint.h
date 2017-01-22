@@ -26,6 +26,7 @@ class Bigint {
     std::string subtract(std::string minus);
     std::string multiply(std::string times);
     std::string divide(std::string divisor);
+    std::string pow(int exp);
     std::string get() const;
    
 };

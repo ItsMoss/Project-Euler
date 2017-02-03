@@ -19,8 +19,10 @@ class Bigint {
   public:
     Bigint();
     Bigint(std::string n);
+    Bigint(int n);
     Bigint(const Bigint & rhs);
     Bigint & operator=(const Bigint & rhs);
+    bool operator>(const Bigint & rhs);
     ~Bigint() {}
     std::string add(std::string plus);
     std::string subtract(std::string minus);

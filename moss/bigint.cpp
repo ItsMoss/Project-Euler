@@ -60,6 +60,12 @@ Bigint::Bigint() : number(std::string("0")) {}
 
 Bigint::Bigint(std::string n) : number(n) {}
 
+Bigint::Bigint(int n) {
+  std::stringstream nstream;
+  nstream << n;
+  number = nstream.str();
+}
+
 Bigint::Bigint(const Bigint & rhs) {
   number = rhs.number;
 }
@@ -69,6 +75,18 @@ Bigint & Bigint::operator=(const Bigint & rhs) {
   number = rhs.number;
   return *this;
 }
+
+bool Bigint::operator>(const Bigint & rhs) {
+  removeExtraZeros(number, rhs.number);
+  if (number.length() > rhs.number.length()) return true;
+  if (number.length() < rhs.number.length()) return false;
+  for (size_t i = 0; i < number.length(); i++) {
+    if (number[i] > rhs.number[i]) return true;
+    if (number[i] < rhs.number[i]) return false;
+  }
+  return false;
+}
+
 
 std::string Bigint::add(std::string plus) {
   removeExtraZeros(number, plus);

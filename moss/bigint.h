@@ -22,12 +22,20 @@ class Bigint {
     Bigint(int n);
     Bigint(const Bigint & rhs);
     Bigint & operator=(const Bigint & rhs);
-    bool operator>(const Bigint & rhs);
+    bool operator>(Bigint & rhs);
     ~Bigint() {}
     std::string add(std::string plus);
+    Bigint & operator+=(std::string plus);
+    Bigint & operator+=(int plusi);
     std::string subtract(std::string minus);
+    Bigint & operator-=(std::string minus);
+    Bigint & operator-=(int minusi);
     std::string multiply(std::string times);
+    Bigint & operator*=(std::string times);
+    Bigint & operator*=(int timesi);
     std::string divide(std::string divisor);
+    Bigint & operator/=(std::string divisor);
+    Bigint & operator/=(int divisori);
     std::string pow(int exp);
     std::string get() const;
    

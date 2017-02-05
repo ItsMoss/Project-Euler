@@ -76,7 +76,7 @@ Bigint & Bigint::operator=(const Bigint & rhs) {
   return *this;
 }
 
-bool Bigint::operator>(const Bigint & rhs) {
+bool Bigint::operator>(Bigint & rhs) {
   removeExtraZeros(number, rhs.number);
   if (number.length() > rhs.number.length()) return true;
   if (number.length() < rhs.number.length()) return false;
@@ -108,6 +108,49 @@ std::string Bigint::add(std::string plus) {
   return number;
 }
 
+Bigint & Bigint::operator+=(std::string plus) {
+  removeExtraZeros(number, plus);
+  size_t len = max(number, plus);
+  padZerosLeft(number, len);
+  padZerosLeft(plus, len);
+  int remainder = 0;
+  std::stringstream sstrm;
+  for (size_t i = len; i > 0; i--) {
+    int sum = char2int(number[i-1]) + char2int(plus[i-1]) + remainder;
+    if (sum > 9) remainder = 1;
+    else remainder = 0;
+    sstrm << sum % 10;
+  }
+  if (remainder) sstrm << remainder;
+  std::string ans = sstrm.str();
+  std::reverse(ans.begin(), ans.end());
+  number = ans;
+  return *this;
+}
+
+Bigint & Bigint::operator+=(int plusi) {
+  std::stringstream intstrm;
+  intstrm << plusi;
+  std::string plus = intstrm.str();
+  removeExtraZeros(number, plus);
+  size_t len = max(number, plus);
+  padZerosLeft(number, len);
+  padZerosLeft(plus, len);
+  int remainder = 0;
+  std::stringstream sstrm;
+  for (size_t i = len; i > 0; i--) {
+    int sum = char2int(number[i-1]) + char2int(plus[i-1]) + remainder;
+    if (sum > 9) remainder = 1;
+    else remainder = 0;
+    sstrm << sum % 10;
+  }
+  if (remainder) sstrm << remainder;
+  std::string ans = sstrm.str();
+  std::reverse(ans.begin(), ans.end());
+  number = ans;
+  return *this;
+}
+
 std::string Bigint::subtract(std::string minus) {
   removeExtraZeros(number, minus);
   size_t len = max(number, minus);
@@ -132,6 +175,61 @@ std::string Bigint::subtract(std::string minus) {
   std::reverse(ans.begin(), ans.end());
   number = ans;
   return number;
+}
+
+Bigint & Bigint::operator-=(std::string minus) {
+  removeExtraZeros(number, minus);
+  size_t len = max(number, minus);
+  padZerosLeft(number, len);
+  padZerosLeft(minus, len);
+  std::stringstream sstrm;
+  bool negate = false;
+  if (lessThan(minus)) {
+    swap(number, minus);
+    negate = true;
+  }
+  for (size_t i = len; i > 0; i--) {
+    int diff = char2int(number[i-1]) - char2int(minus[i-1]);
+    if (diff < 0) {
+      diff += 10;
+      carryTheOne(number, i-1);
+    }
+    sstrm << diff;
+  }
+  if (negate) sstrm << '-';
+  std::string ans = sstrm.str();
+  std::reverse(ans.begin(), ans.end());
+  number = ans;
+  return *this;
+}
+
+Bigint & Bigint::operator-=(int minusi) {
+  std::stringstream intstrm;
+  intstrm << minusi;
+  std::string minus = intstrm.str();
+  removeExtraZeros(number, minus);
+  size_t len = max(number, minus);
+  padZerosLeft(number, len);
+  padZerosLeft(minus, len);
+  std::stringstream sstrm;
+  bool negate = false;
+  if (lessThan(minus)) {
+    swap(number, minus);
+    negate = true;
+  }
+  for (size_t i = len; i > 0; i--) {
+    int diff = char2int(number[i-1]) - char2int(minus[i-1]);
+    if (diff < 0) {
+      diff += 10;
+      carryTheOne(number, i-1);
+    }
+    sstrm << diff;
+  }
+  if (negate) sstrm << '-';
+  std::string ans = sstrm.str();
+  std::reverse(ans.begin(), ans.end());
+  number = ans;
+  return *this;
 }
 
 std::string Bigint::multiply(std::string times) {
@@ -170,6 +268,81 @@ std::string Bigint::multiply(std::string times) {
   return number;
 }
 
+Bigint & Bigint::operator*=(std::string times) {
+  removeExtraZeros(number, times);
+  // determine whether number or times is larger
+  if (lessThan(times)) swap(number, times);
+  // swap number and times if times is larger
+  // create a vector of stringstreams with same length as number
+  std::vector<std::string> products;
+  // double for loop where outer is times length, inner is number length
+  for (size_t i = times.length(); i > 0; i--) {
+    // init remainder to 0
+    int remainder = 0;
+    std::stringstream strm;
+    std::string zeros = std::string(times.length()-i, '0');
+    strm << zeros;
+    for (size_t j = number.length(); j > 0; j--) {
+    // product = number[len-j] * times[len-i] + remainder
+      int product = char2int(number[j-1]) * char2int(times[i-1]) + remainder;
+    // remainder = product / 10
+      remainder = product / 10;
+    // vector[i] << product % 10
+      strm << product % 10;
+    }
+    strm << remainder;
+    std::string str = strm.str();
+    std::reverse(str.begin(), str.end());
+    products.push_back(str);
+  }
+  // set number to vector[0]
+  number = products[0];
+  // loop through rest of vector and do add(vector[i])
+  for (size_t k = 1; k < products.size(); k++) {
+    add(products[k]);
+  }
+  return *this;
+}
+
+Bigint & Bigint::operator*=(int timesi) {
+  std::stringstream intstrm;
+  intstrm << timesi;
+  std::string times = intstrm.str();
+  removeExtraZeros(number, times);
+  // determine whether number or times is larger
+  if (lessThan(times)) swap(number, times);
+  // swap number and times if times is larger
+  // create a vector of stringstreams with same length as number
+  std::vector<std::string> products;
+  // double for loop where outer is times length, inner is number length
+  for (size_t i = times.length(); i > 0; i--) {
+    // init remainder to 0
+    int remainder = 0;
+    std::stringstream strm;
+    std::string zeros = std::string(times.length()-i, '0');
+    strm << zeros;
+    for (size_t j = number.length(); j > 0; j--) {
+    // product = number[len-j] * times[len-i] + remainder
+      int product = char2int(number[j-1]) * char2int(times[i-1]) + remainder;
+    // remainder = product / 10
+      remainder = product / 10;
+    // vector[i] << product % 10
+      strm << product % 10;
+    }
+    strm << remainder;
+    std::string str = strm.str();
+    std::reverse(str.begin(), str.end());
+    products.push_back(str);
+  }
+  // set number to vector[0]
+  number = products[0];
+  // loop through rest of vector and do add(vector[i])
+  for (size_t k = 1; k < products.size(); k++) {
+    add(products[k]);
+  }
+  return *this;
+}
+
 std::string Bigint::divide(std::string divisor) {
   if (lessThan(divisor)) {
     number = std::string("0");
@@ -187,6 +360,47 @@ std::string Bigint::divide(std::string divisor) {
   strm << ans;
   number = strm.str();
   return number;
+}
+
+Bigint & Bigint::operator/=(std::string divisor) {
+  if (lessThan(divisor)) {
+    number = std::string("0");
+    return *this;
+  }
+  Bigint multiple = Bigint(divisor);
+  int ans = 0;
+  std::string m = multiple.get();
+  while (!lessThan(m)) {
+    multiple.add(divisor);
+    ans++;
+    m = multiple.get();
+  }
+  std::stringstream strm;
+  strm << ans;
+  number = strm.str();
+  return *this;
+}
+
+Bigint & Bigint::operator/=(int divisori) {
+  std::stringstream intstrm;
+  intstrm << divisori;
+  std::string divisor = intstrm.str();
+  if (lessThan(divisor)) {
+    number = std::string("0");
+    return *this;
+  }
+  Bigint multiple = Bigint(divisor);
+  int ans = 0;
+  std::string m = multiple.get();
+  while (!lessThan(m)) {
+    multiple.add(divisor);
+    ans++;
+    m = multiple.get();
+  }
+  std::stringstream strm;
+  strm << ans;
+  number = strm.str();
+  return *this;
 }
 
 std::string Bigint::pow(int exp) {

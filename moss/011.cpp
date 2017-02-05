@@ -24,7 +24,7 @@ int parse_number(std::string & str) {
 
 void init_grid(std::vector<std::string> & from, std::vector<std::vector<int> > & to) {
   for (size_t i = 0; i < from.size(); i ++) {
-    to.push_back(std::vector<int>);
+    to.push_back(std::vector<int>());
     while (!from[i].empty()) to[i].push_back(parse_number(from));
   }
 }
@@ -32,55 +32,67 @@ void init_grid(std::vector<std::string> & from, std::vector<std::vector<int> > &
 Bigint horizontal_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
   if (n_adjacent > grid.front().size()) return Bigint();
   // init max as product of first n_adjacent ints
-  int max = 1;
-  for (int i = 0; i < n_adjacent; i++) max *= grid.front()[i];
+  Bigint max = Bigint(std::string("1"));
+  
   // find max
   for (size_t i = 0; i < grid.size(); i++) {
-    for (std::vector<int>::const_iterator it = grid[i].begin() + n_adjacent; it != grid[i].end(); ++it) {
-      int curr = 1;
+    for (std::vector<int>::const_iterator it = grid[i].begin() + n_adjacent - 1; it != grid[i].end(); ++it) {
+      Bigint curr = Bigint(std::string("1"));
       for (int j = 0; j < n_adjacent; j++) curr *= *(it-j);
       if (curr > max) max = curr;
     }
   }
-  // return Bigint of max
-  return Bigint(max);
+  return max;
 }
 
 Bigint vertical_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
   if (n_adjacent > grid.size()) return Bigint();
-  // init max as product of first n_adjacent ints
-  int max = 1;
-  for (int i = 0; i < n_adjacent; i++) max *= grid[i].front();
+  // init max as product of first n_adjacent
+  Bigint max = Bigint(std::string("1"));
+  
   // find max
   for (size_t i = 0; i < grid.front().size(); i++) {
-    for (std::vector<std::vector<int> >::const_iterator it = grid.begin() + n_adjacent; it != grid.end(); ++it) {
-      int curr = 1;
+    for (std::vector<std::vector<int> >::const_iterator it = grid.begin() + n_adjacent - 1; it != grid.end(); ++it) {
+      Bigint curr = Bigint(std::string("1"));
       for (int j = 0; j < n_adjacent; j++) curr *= (it-j)[i];
       if (curr > max) max = curr;
     }
   }
-  // return Bigint of max
-  return Bigint(max);
+  return max;
 }
 
 Bigint diag1_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
-  if (n_adjacent > grid.size() || n_adjacent > grid.front().size()) retur Bigint();
+  if (n_adjacent > grid.size() || n_adjacent > grid.front().size()) return Bigint();
 
-  int max = 1;
+  Bigint max = Bigint(std::string("1"));
   for (int i = 0; i < n_adjacent; i++) max *= grid[i][i];
 
   // find max
-  return Bigint(max);
+  for (size_t i = n_adjacent-1; i < grid.size(); i++) {
+    for (size_t j = n_adjacent-1; i < grid.front().size(); j++) {
+      Bigint curr = Bigint(std::string("1"));
+      for (int count = 0; count < n_adjacent; count++) curr *= grid[i-count][j-count];
+      if (curr > max) max = curr;
+    }
+  }
+
+  return max;
 }
 
-Bigint diag1_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
-  if (n_adjacent > grid.size() || n_adjacent > grid.front().size()) retur Bigint();
+Bigint diag2_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
+  if (n_adjacent > grid.size() || n_adjacent > grid.front().size()) return Bigint();
 
-  int max = 1;
-  for (int i = 0; i < n_adjacent; i++) max *= grid[n_adjacent-1-i][i];
+  Bigint max = Bigint(std::string("1"));
 
-  // find max
-  return Bigint(max);
+  for (size_t i = 0; i < grid.size() - n_adjacent; i++) {
+    for (size_t j = n_adjacent-1; j < grid.front().size(); j++) {
+      Bigint curr = Bigint(std::string("1"));
+      for (int count = 0; count < n_adjacent; count++) curr *= grid[i+count][j-count];
+      if (curr > max) max = curr;
+    }
+  }
+
+  return max;
 }
 
 

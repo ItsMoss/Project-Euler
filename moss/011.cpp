@@ -1,5 +1,6 @@
 #include <cctype>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -16,7 +17,8 @@ int parse_number(std::string & str) {
   remove_space(str);
   int n = 0;
   while (isdigit(str[n])) n++;
-  const char num_str[n+1] = str.substr(0, n).c_str();
+  char num_str[n+1] = {};
+  strcpy(num_str, str.substr(0, n).c_str());
   str.erase(str.begin()+n);
   remove_space(str);
   return atoi(num_str);
@@ -25,12 +27,12 @@ int parse_number(std::string & str) {
 void init_grid(std::vector<std::string> & from, std::vector<std::vector<int> > & to) {
   for (size_t i = 0; i < from.size(); i ++) {
     to.push_back(std::vector<int>());
-    while (!from[i].empty()) to[i].push_back(parse_number(from));
+    while (!from[i].empty()) to[i].push_back(parse_number(from[i]));
   }
 }
 
 Bigint horizontal_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
-  if (n_adjacent > grid.front().size()) return Bigint();
+  if (n_adjacent > (int)grid.front().size()) return Bigint();
   // init max as product of first n_adjacent ints
   Bigint max = Bigint(std::string("1"));
   
@@ -46,7 +48,7 @@ Bigint horizontal_max_product(const std::vector<std::vector<int> > & grid, int &
 }
 
 Bigint vertical_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
-  if (n_adjacent > grid.size()) return Bigint();
+  if (n_adjacent > (int)grid.size()) return Bigint();
   // init max as product of first n_adjacent
   Bigint max = Bigint(std::string("1"));
   
@@ -54,7 +56,7 @@ Bigint vertical_max_product(const std::vector<std::vector<int> > & grid, int & n
   for (size_t i = 0; i < grid.front().size(); i++) {
     for (std::vector<std::vector<int> >::const_iterator it = grid.begin() + n_adjacent - 1; it != grid.end(); ++it) {
       Bigint curr = Bigint(std::string("1"));
-      for (int j = 0; j < n_adjacent; j++) curr *= (it-j)[i];
+      for (int j = 0; j < n_adjacent; j++) curr *= (*(it-j))[i];
       if (curr > max) max = curr;
     }
   }
@@ -62,7 +64,7 @@ Bigint vertical_max_product(const std::vector<std::vector<int> > & grid, int & n
 }
 
 Bigint diag1_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
-  if (n_adjacent > grid.size() || n_adjacent > grid.front().size()) return Bigint();
+  if (n_adjacent > (int)grid.size() || n_adjacent > (int)grid.front().size()) return Bigint();
 
   Bigint max = Bigint(std::string("1"));
   for (int i = 0; i < n_adjacent; i++) max *= grid[i][i];
@@ -80,7 +82,7 @@ Bigint diag1_max_product(const std::vector<std::vector<int> > & grid, int & n_ad
 }
 
 Bigint diag2_max_product(const std::vector<std::vector<int> > & grid, int & n_adjacent) {
-  if (n_adjacent > grid.size() || n_adjacent > grid.front().size()) return Bigint();
+  if (n_adjacent > (int)grid.size() || n_adjacent > (int)grid.front().size()) return Bigint();
 
   Bigint max = Bigint(std::string("1"));
 
@@ -116,17 +118,18 @@ int main(int argc, char ** argv) {
   init_grid(inputdata, grid);
 
   // find max product L-R
-  Bigint answer;
-  if ((Bigint max = horizontal_max_product(grid, N)) > answer) answer = max;
+  Bigint answer, max;
+  int n = N;
+  if ((max = horizontal_max_product(grid, n)) > answer) answer = max;
 
   // find max product U-D
-  if ((Bigint max = vertical_max_product(grid, N)) > answer) answer = max;
+  if ((max = vertical_max_product(grid, n)) > answer) answer = max;
 
   // find max product diagonal UL-DR
-  if ((Bigint max = diag1_max_product(grid, N)) > answer) answer = max;
+  if ((max = diag1_max_product(grid, n)) > answer) answer = max;
 
   // find max product diagonal DL-UR
-  if ((Bigint max = diag2_max_product(grid, N)) > answer) answer = max;
+  if ((max = diag2_max_product(grid, n)) > answer) answer = max;
 
   // (update max product=answer if necessary)
 

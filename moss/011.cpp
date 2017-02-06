@@ -19,13 +19,13 @@ int parse_number(std::string & str) {
   while (isdigit(str[n])) n++;
   char num_str[n+1] = {};
   strcpy(num_str, str.substr(0, n).c_str());
-  str.erase(str.begin()+n);
+  str.erase(0, n);
   remove_space(str);
   return atoi(num_str);
 }
 
 void init_grid(std::vector<std::string> & from, std::vector<std::vector<int> > & to) {
-  for (size_t i = 0; i < from.size(); i ++) {
+  for (size_t i = 0; i < from.size(); i++) {
     to.push_back(std::vector<int>());
     while (!from[i].empty()) to[i].push_back(parse_number(from[i]));
   }
@@ -67,11 +67,10 @@ Bigint diag1_max_product(const std::vector<std::vector<int> > & grid, int & n_ad
   if (n_adjacent > (int)grid.size() || n_adjacent > (int)grid.front().size()) return Bigint();
 
   Bigint max = Bigint(std::string("1"));
-  for (int i = 0; i < n_adjacent; i++) max *= grid[i][i];
 
   // find max
   for (size_t i = n_adjacent-1; i < grid.size(); i++) {
-    for (size_t j = n_adjacent-1; i < grid.front().size(); j++) {
+    for (size_t j = n_adjacent-1; j < grid.front().size(); j++) {
       Bigint curr = Bigint(std::string("1"));
       for (int count = 0; count < n_adjacent; count++) curr *= grid[i-count][j-count];
       if (curr > max) max = curr;
@@ -121,7 +120,7 @@ int main(int argc, char ** argv) {
   Bigint answer, max;
   int n = N;
   if ((max = horizontal_max_product(grid, n)) > answer) answer = max;
-
+  
   // find max product U-D
   if ((max = vertical_max_product(grid, n)) > answer) answer = max;
 

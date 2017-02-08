@@ -19,10 +19,14 @@ class Bigint {
   public:
     Bigint();
     Bigint(std::string n);
+    Bigint(const char * n);
     Bigint(int n);
     Bigint(const Bigint & rhs);
     Bigint & operator=(const Bigint & rhs);
     bool operator>(Bigint & rhs);
+    bool operator>=(Bigint & rhs);
+    bool operator<(Bigint & rhs);
+    bool operator<=(Bigint & rhs);
     ~Bigint() {}
     std::string add(std::string plus);
     Bigint & operator+=(std::string plus);
@@ -37,6 +41,10 @@ class Bigint {
     Bigint & operator/=(std::string divisor);
     Bigint & operator/=(int divisori);
     std::string pow(int exp);
+    Bigint & sqrt();
+    std::string operator%(std::string divisor);
+    std::string operator%(int divisori);
+    std::string get();
     std::string get() const;
    
 };

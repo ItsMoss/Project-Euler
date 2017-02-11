@@ -44,6 +44,16 @@ bool Bigint::lessThan(std::string & str) {
   return false;
 }
 
+bool Bigint::lessThanEqual(std::string & str) {
+  if (number.length() > str.length()) return false;
+  if (number.length() < str.length()) return true;
+  for (size_t i = 0; i < number.length(); i++) {
+    if (number[i] > str[i]) return false;
+    if (number[i] < str[i]) return true;
+  }
+  return true;
+}
+
 void Bigint::swap(std::string & str1, std::string & str2) {
   std::string temp = str1;
   str1 = str2;
@@ -123,6 +133,30 @@ bool Bigint::operator<=(Bigint & rhs) {
     if (number[i] < rhs.number[i]) return true;
   }
   return true;
+}
+
+
+bool Bigint::operator==(Bigint & rhs) {
+  removeExtraZeros(number, rhs.number);
+  if (number.length() > rhs.number.length()) return false;
+  if (number.length() < rhs.number.length()) return false;
+  for (size_t i = 0; i < number.length(); i++) {
+    if (number[i] > rhs.number[i]) return false;
+    if (number[i] < rhs.number[i]) return false;
+  }
+  return true;
+}
+
+
+bool Bigint::operator!=(Bigint & rhs) {
+  removeExtraZeros(number, rhs.number);
+  if (number.length() > rhs.number.length()) return true;
+  if (number.length() < rhs.number.length()) return true;
+  for (size_t i = 0; i < number.length(); i++) {
+    if (number[i] > rhs.number[i]) return true;
+    if (number[i] < rhs.number[i]) return true;
+  }
+  return false;
 }
 
 
@@ -454,23 +488,31 @@ std::string Bigint::pow(int exp) {
   return number;
 }
 
-Bigint & Bigint::sqrt() {
-  Bigint num = Bigint("1");
-  while (num.pow(2) < this->get()) num+=1;
-  return *this;
+std::string Bigint::sqrt() {
+  Bigint num = Bigint("1"), it = Bigint("1");
+  num.pow(2);
+  while (num < *this) {
+    it+=1;
+    num = it;
+    num.pow(2);
+  }
+  *this = it;
+  return number;
 }
 
 std::string Bigint::operator%(std::string divisor) {
   if (lessThan(divisor)) {
     return this->get();
   }
-  Bigint multiple = Bigint(divisor);
+  Bigint multiple = Bigint(divisor), ans;
   std::string m = multiple.get();
   while (!lessThan(m)) {
+    ans = multiple;
     multiple.add(divisor);
     m = multiple.get();
   }
-  return multiple.subtract(divisor);
+  Bigint temp = *this;
+  return temp.subtract(ans.get());
 }
 
 std::string Bigint::operator%(int divisori) {
@@ -480,13 +522,15 @@ std::string Bigint::operator%(int divisori) {
   if (lessThan(divisor)) {
     return Bigint::get();
   }
-  Bigint multiple = Bigint(divisor);
+  Bigint multiple = Bigint(divisor), ans;
   std::string m = multiple.get();
   while (!lessThan(m)) {
+    ans = multiple;
     multiple.add(divisor);
     m = multiple.get();
   }
-  return multiple.subtract(divisor);
+  Bigint temp = *this;
+  return temp.subtract(ans.get());
 }
 
 std::string Bigint::get() {

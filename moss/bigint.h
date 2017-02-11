@@ -13,6 +13,7 @@ class Bigint {
     int char2int(char digit);
     void removeExtraZeros(std::string & str1, std::string & str2);
     bool lessThan(std::string & str);
+    bool lessThanEqual(std::string & str);
     void swap(std::string & str1, std::string & str2);
     void carryTheOne(std::string & str, size_t pos);
 
@@ -27,6 +28,8 @@ class Bigint {
     bool operator>=(Bigint & rhs);
     bool operator<(Bigint & rhs);
     bool operator<=(Bigint & rhs);
+    bool operator==(Bigint & rhs);
+    bool operator!=(Bigint & rhs);
     ~Bigint() {}
     std::string add(std::string plus);
     Bigint & operator+=(std::string plus);
@@ -41,7 +44,7 @@ class Bigint {
     Bigint & operator/=(std::string divisor);
     Bigint & operator/=(int divisori);
     std::string pow(int exp);
-    Bigint & sqrt();
+    std::string sqrt();
     std::string operator%(std::string divisor);
     std::string operator%(int divisori);
     std::string get();

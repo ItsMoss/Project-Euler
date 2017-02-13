@@ -501,6 +501,7 @@ std::string Bigint::sqrt() {
 }
 
 std::string Bigint::operator%(std::string divisor) {
+  if (!divisor.compare("0")) return std::string("ERROR. Zero div.");
   if (lessThan(divisor)) {
     return this->get();
   }
@@ -516,11 +517,12 @@ std::string Bigint::operator%(std::string divisor) {
 }
 
 std::string Bigint::operator%(int divisori) {
+  if (divisori == 0) return std::string("ERROR. Zero div.");
   std::stringstream intstrm;
   intstrm << divisori;
   std::string divisor = intstrm.str();
   if (lessThan(divisor)) {
-    return Bigint::get();
+    return this->get();
   }
   Bigint multiple = Bigint(divisor), ans;
   std::string m = multiple.get();

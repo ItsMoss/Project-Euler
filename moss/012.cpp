@@ -64,11 +64,18 @@ void print_counts(const std::vector<int *> & counts, const std::vector<Bigint> &
 }
 
 
+void print_tris(const std::vector<Bigint> & bis) {
+  for (size_t i = 0; i < bis.size(); i++) {
+    std::cout << i << ":" << bis[i].get() << std::endl;;
+  }
+}
+
+
 int main(int argc, char ** argv) {
   std::cout << "Finding the first triangle number to have 500 factors...";
   std::cout << std::endl;
   
-  int N = 8;  // number of threads
+  int N = 16;  // number of threads
   pthread_t thread;
   std::vector<pthread_t> threads(N, thread);
   printf("Initialized %d threads\n", N);
@@ -91,7 +98,7 @@ int main(int argc, char ** argv) {
   printf("Initialized both triangular numbers and counts vectors\n");
   fflush(stdout);
 
-  while (all_below(500, counts)) {
+  while (all_below(50, counts)) {
     // free counts
     free_counts(counts);
     printf("Freed counts\n");
@@ -110,8 +117,9 @@ int main(int argc, char ** argv) {
 
       // and update the triangle numbers
       int prev = (i+N-1) % N;
+      Bigint bitemp(tris[prev]);
       incr+=1;
-      tris[i] = tris[prev]+=incr;
+      tris[i] = bitemp+=incr;
       printf("Updated thread %d\n", i);
       fflush(stdout);
     }

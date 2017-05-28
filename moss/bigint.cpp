@@ -223,6 +223,10 @@ Bigint & Bigint::operator+=(int plusi) {
   return *this;
 }
 
+Bigint & Bigint::operator++() {
+  return this->operator+=("1");
+}
+
 std::string Bigint::subtract(std::string minus) {
   removeExtraZeros(number, minus);
   size_t len = max(number, minus);
@@ -302,6 +306,10 @@ Bigint & Bigint::operator-=(int minusi) {
   std::reverse(ans.begin(), ans.end());
   number = ans;
   return *this;
+}
+
+Bigint & Bigint::operator--() {
+  return this->operator-=("1");
 }
 
 std::string Bigint::multiply(std::string times) {

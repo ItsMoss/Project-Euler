@@ -5,10 +5,13 @@
 
 int main(int argc, char ** argv) {
   if (argc != 2) return EXIT_FAILURE;
-  std::cout << "Input bigint: " << argv[1] << std::endl;
+
   Bigint bi(argv[1]);
-  for (int i=0; i < 100; i++) {
-    std::cout << bi.get() << "%" << i << "=" << bi%i << std::endl;
+
+  for (int i=0; i < 3; i++) {
+    std::cout << bi.get();
+    fflush(stdout);
+    std::cout << "sqrt=" << bi.sqrt() << std::endl;
   }
   return EXIT_SUCCESS;
 }

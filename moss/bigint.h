@@ -34,9 +34,11 @@ class Bigint {
     std::string add(std::string plus);
     Bigint & operator+=(std::string plus);
     Bigint & operator+=(int plusi);
+    Bigint & operator++();
     std::string subtract(std::string minus);
     Bigint & operator-=(std::string minus);
     Bigint & operator-=(int minusi);
+    Bigint & operator--();
     std::string multiply(std::string times);
     Bigint & operator*=(std::string times);
     Bigint & operator*=(int timesi);

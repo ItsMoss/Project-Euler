@@ -22,8 +22,15 @@ void * factor_count(void * bi) {  // param: Bigint *, return: int *
   for (Bigint i = Bigint(2); i <= temp; i+=1) {
     std::string mod = *((Bigint *)bi) % i.get();
     if (is_zero_string(mod)) {
+      Bigint lookingFor(171);
+      if (temp == lookingFor) {  // for 28920
+        std::cout << i.get() << " is a factor of 28920 b/c mod=" << mod << std::endl;
+	fflush(stdout);
+      }
       ans++;
-      if (i != temp) ans++;
+      if (i != temp) {
+        ans++;
+      }
     }
   }
   int * answer = new int;
@@ -32,9 +39,37 @@ void * factor_count(void * bi) {  // param: Bigint *, return: int *
 }
 
 
+bool is_triangular(Bigint b) {
+  Bigint start(1), curr(1);
+  while (curr < b) {
+    start += 1;
+    curr += start.get();
+  }
+  if (curr == b) {
+    std::cout << b.get() << " is triangular\n";
+    fflush(stdout);
+    return true;
+  }
+  return false;
+}
+
+
+bool all_triangles_below(const std::vector<Bigint> & bis, const int & lim, const std::vector<int *> & nums) {
+  int index = 0;
+  for (std::vector<Bigint>::const_iterator it = bis.begin(); it != bis.end(); ++it) {
+    if (is_triangular(*it) && *(nums[index]) >= lim) {
+      return false;
+    }
+    index++;
+  }
+  return true;
+}
+
 bool all_below(const int & lim, const std::vector<int *> & nums) {
   for (std::vector<int *>::const_iterator it = nums.begin(); it != nums.end(); ++it) {
-    if (**it >= lim) return false;
+    if (**it >= lim) {
+      return false;
+    }
   }
   return true;
 }
@@ -78,8 +113,8 @@ int main(int argc, char ** argv) {
   int N = 16;  // number of threads
   pthread_t thread;
   std::vector<pthread_t> threads(N, thread);
-  printf("Initialized %d threads\n", N);
-  fflush(stdout);
+  // printf("Initialized %d threads\n", N);
+  // fflush(stdout);
 
   // init arrays to compute on
   int incr = 0;
@@ -95,36 +130,36 @@ int main(int argc, char ** argv) {
     *c = 0;
     counts.push_back(c);  // init factor counts to zero
   }
-  printf("Initialized both triangular numbers and counts vectors\n");
-  fflush(stdout);
+  // printf("Initialized both triangular numbers and counts vectors\n");
+  // fflush(stdout);
 
   while (all_below(50, counts)) {
     // free counts
     free_counts(counts);
-    printf("Freed counts\n");
-    fflush(stdout);
+    // printf("Freed counts\n");
+    // fflush(stdout);
     // parallel execution
     for (int i = 0; i < N; i++) {
       pthread_create(&(threads[i]), NULL, factor_count, &(tris[i]));
     }
-    printf("Parallel execution complete\n");
-    fflush(stdout);
+    // printf("Parallel execution complete\n");
+    // fflush(stdout);
     // receive parallel results
     for (int i = 0; i < N; i++) {
       pthread_join(threads[i], (void **)(&counts[i]));
-      printf("Joined thread %d\n", i);
-      fflush(stdout);
+      // printf("Joined thread %d\n", i);
+      // fflush(stdout);
 
       // and update the triangle numbers
       int prev = (i+N-1) % N;
       Bigint bitemp(tris[prev]);
       incr+=1;
       tris[i] = bitemp+=incr;
-      printf("Updated thread %d\n", i);
-      fflush(stdout);
+      // printf("Updated thread %d\n", i);
+      // fflush(stdout);
     }
 
-    print_counts(counts, tris);
+    // print_counts(counts, tris);
   }
 
   size_t max = max_of_vector(counts);
